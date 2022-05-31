@@ -1,9 +1,7 @@
-import Page from '../components/Page';
-
 export default function Homepage() {
   return (
-    <Page>
+    <div>
       <p>Hello!</p>
-    </Page>
+    </div>
   );
 }
