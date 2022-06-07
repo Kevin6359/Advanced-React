@@ -32,11 +32,11 @@ const GlobalStyles = createGlobalStyle`
   }
   a {
     text-decoration: none;
-    color: --var(black, black);
+    color: var(--black, black);
   }
   a:hover {
     text-decoration: underline;
-    color: --var(black, black);
+    color: var(--black, black);
   }
   button {
     font-family: 'radnika_next', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
