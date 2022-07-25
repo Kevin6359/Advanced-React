@@ -10,8 +10,8 @@ export default function useForm(initial = {}) {
       value = parseInt(value);
     }
 
-    if (type === 'value') {
-      value[0] = e.target.files;
+    if (type === 'file') {
+      [value] = e.target.files;
     }
 
     setInputs({
