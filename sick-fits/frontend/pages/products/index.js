@@ -6,7 +6,7 @@ export default function ProductsPage({ query }) {
   return (
     <div>
       <Pagination page={page} />
-      <Products />
+      <Products page={page} />
       <Pagination page={page} />
     </div>
   );
