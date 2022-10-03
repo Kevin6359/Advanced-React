@@ -1,7 +1,5 @@
+import SignIn from '../components/SignIn';
+
 export default function Orders() {
-  return (
-    <div>
-      <p>Sign in</p>
-    </div>
-  );
+  return <SignIn />;
 }
