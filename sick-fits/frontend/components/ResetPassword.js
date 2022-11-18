@@ -3,57 +3,48 @@ import gql from 'graphql-tag';
 import useForm from '../lib/useForm';
 import DisplayError from './ErrorMessage';
 import Form from './styles/Form';
-import { CURRENT_USER_QUERY } from './User';
 
-const SIGN_UP_MUTATION = gql`
-  mutation SIGN_UP_MUTATION(
+const RESET_MUTATION = gql`
+  mutation RESET_MUTATION(
     $email: String!
-    $name: String!
+    $token: String!
     $password: String!
   ) {
-    createUser(data: { email: $email, password: $password, name: $name }) {
-      id
-      email
-      name
+    redeemUserPasswordResetToken(
+      email: $email
+      token: $token
+      password: $password
+    ) {
+      code
+      message
     }
   }
 `;
 
-export default function SignUp() {
+export default function ResetPassword({ token }) {
   const { inputs, handleChange, clearForm } = useForm({
     email: '',
     password: '',
-    name: '',
   });
-  const [signup, { data, loading, error }] = useMutation(SIGN_UP_MUTATION, {
-    variables: inputs,
+  const [reset, { data, loading, error }] = useMutation(RESET_MUTATION, {
+    variables: { ...inputs, token },
   });
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(inputs);
-    const res = await signup().catch(console.error);
+    console.log({ ...inputs, token });
+    const res = await reset().catch(console.error);
     console.log(res);
     clearForm();
   }
+  const succesfulError = data?.redeemUserPasswordResetToken;
   return (
     <Form method="POST" onSubmit={handleSubmit}>
-      <h2>Sign Up For An Account</h2>
-      <DisplayError error={error} />
-      {data?.createUser && (
-        <p>{`Signed up successfully using ${data.createUser.email}! Go ahead and Sign In!`}</p>
+      <h2>Request A Password Reset</h2>
+      <DisplayError error={error || succesfulError} />
+      {data?.redeemUserPasswordResetToken === null && (
+        <p>Success! You can now sign in!</p>
       )}
-      <fieldset disabled={loading} aria-busy={loading}>
-        <label htmlFor="name">
-          Name
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            autoComplete="name"
-            value={inputs.name}
-            onChange={handleChange}
-          />
-        </label>
+      <fieldset>
         <label htmlFor="email">
           Email
           <input
@@ -76,7 +67,7 @@ export default function SignUp() {
             onChange={handleChange}
           />
         </label>
-        <button type="submit">Sign Up</button>
+        <button type="submit">Password Reset</button>
       </fieldset>
     </Form>
   );

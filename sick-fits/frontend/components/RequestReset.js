@@ -37,7 +37,7 @@ export default function RequestReset() {
       {data?.sendUserPasswordResetLink === null && (
         <p>Success! Check your email for a link!</p>
       )}
-      <fieldset>
+      <fieldset disabled={loading} aria-busy={loading}>
         <label htmlFor="email">
           Email
           <input
