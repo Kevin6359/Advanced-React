@@ -2,6 +2,8 @@ import { useLazyQuery } from '@apollo/client';
 import { resetIdCounter, useCombobox } from 'downshift';
 import gql from 'graphql-tag';
 import debounce from 'lodash.debounce';
+import { useRouter } from 'next/dist/client/router';
+import { useMemo } from 'react';
 import { DropDown, DropDownItem, SearchStyles } from './styles/DropDown';
 
 const SEARCH_PRODUCTS_QUERY = gql`
@@ -14,8 +16,8 @@ const SEARCH_PRODUCTS_QUERY = gql`
         ]
       }
     ) {
-      name
       id
+      name
       photo {
         image {
           publicUrlTransformed
@@ -26,46 +28,74 @@ const SEARCH_PRODUCTS_QUERY = gql`
 `;
 
 export default function Search() {
-  resetIdCounter();
+  const router = useRouter();
   const [findItems, { loading, data, error }] = useLazyQuery(
     SEARCH_PRODUCTS_QUERY,
-    { fetchPolicy: 'no-cache' }
+    {
+      fetchPolicy: 'no-cache',
+    }
   );
-  const findItemsButChill = debounce(findItems, 350);
-  const { inputValue, getMenuProps, getInputProps, getComboboxProps } =
-    useCombobox({
-      items: [],
-      onInputValueChange() {
-        console.log('input value change');
-        console.log(inputValue);
-        findItemsButChill({
-          variables: {
-            searchTerm: inputValue,
-          },
-        });
-      },
-      onSelectedItemChange() {
-        console.log('selected item changed');
-      },
-    });
-  console.log(data);
+  const items = data?.searchTerms || [];
+  const findItemsButChill = useMemo(
+    () => debounce(findItems, 350),
+    [findItems]
+  );
+  resetIdCounter();
+  const {
+    isOpen,
+    inputValue,
+    getMenuProps,
+    getInputProps,
+    getComboboxProps,
+    getItemProps,
+    highlightedIndex,
+  } = useCombobox({
+    items,
+    onInputValueChange() {
+      findItemsButChill({
+        variables: {
+          searchTerm: document.querySelector('#search').value,
+        },
+      });
+    },
+    onSelectedItemChange({ selectedItem }) {
+      router.push({
+        pathname: `/product/${selectedItem.id}`,
+      });
+    },
+    itemToString: (item) => item?.name || '',
+  });
   return (
     <SearchStyles>
       <div {...getComboboxProps()}>
         <input
           {...getInputProps({
             type: 'search',
-            placeholder: 'Search for an item',
+            placeholder: 'Search for an Item',
             id: 'search',
-            className: 'loading',
+            className: loading ? 'loading' : null,
           })}
         />
       </div>
       <DropDown {...getMenuProps()}>
-        <DropDownItem>hey</DropDownItem>
-        <DropDownItem>hey</DropDownItem>
-        <DropDownItem>hey</DropDownItem>
-        <DropDownItem>hey</DropDownItem>
+        {isOpen &&
+          items.map((item, index) => (
+            <DropDownItem
+              {...getItemProps({ item, index })}
+              key={item.id}
+              highlighted={index === highlightedIndex}
+            >
+              <img
+                src={item.photo[0].image.publicUrlTransformed}
+                alt={item.name}
+                width="50"
+              />
+              {item.name}
+            </DropDownItem>
+          ))}
+        {isOpen && !items.length && !loading && (
+          <DropDownItem>Sorry, No items found for {inputValue}</DropDownItem>
+        )}
       </DropDown>
     </SearchStyles>
   );
