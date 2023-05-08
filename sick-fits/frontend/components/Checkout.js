@@ -1,6 +1,8 @@
-import { CardElement, Elements } from '@stripe/react-stripe-js';
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import styled from 'styled-components';
+import nProgress from 'nprogress';
+import {useState} from 'react';
 import SickButton from './styles/SickButton';
 
 const CheckoutFormStyles = styled.form`
@@ -14,20 +16,48 @@ const CheckoutFormStyles = styled.form`
 
 const stripeLib = loadStripe(process.env.NEXT_PUBLIC_STRIPE_TOKEN);
 
-const handleSubmit = function (e) {
-  e.preventDefault();
-  console.log(e);
-};
+function CheckoutForm() {
+
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(false);
+    const stripe = useStripe();
+    const elements = useElements();
+
+    async function handleSubmit(e){
+        e.preventDefault();
+        setLoading(true);
+        nProgress.start();
+
+        const {error, paymentMethod} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: elements.getElement(CardElement)
+        });
+
+        // console.log(paymentMethod);
+
+        if(error){
+            setError(error);
+        }
+
+        setLoading(false);
+        nProgress.done();
+    }
+
+  return (
+    <CheckoutFormStyles onSubmit={handleSubmit}>
+        {error && <p style={{ fontSize: 12}}>{error.message}</p>}
+        <CardElement />
+        <SickButton type="submit">Check Out Now</SickButton>
+    </CheckoutFormStyles>
+  );
+}
 
 function Checkout() {
-  return (
-    <Elements stripe={stripeLib}>
-      <CheckoutFormStyles onsubmit={handleSubmit}>
-        <CardElement />
-        <SickButton>Check Out Now</SickButton>
-      </CheckoutFormStyles>
-    </Elements>
-  );
+    return (
+        <Elements stripe={stripeLib}>
+            <CheckoutForm />
+        </Elements>
+    )
 }
 
 export { Checkout };
