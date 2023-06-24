@@ -74,12 +74,10 @@ async function checkout(
       description: cartItem.product.description,
       price: cartItem.product.price,
       quantity: cartItem.quantity,
-      photo: { connect: { id: cartItem.product.photo.id }},
     }
     return orderItem;
   })
   console.log('gonna create the order')
-  /*
   // 5. Create the order and return it
   const order = await context.lists.Order.createOne({
     data: {
@@ -97,7 +95,6 @@ async function checkout(
     ids: cartItemIds
   });
   return order;
-  */
 }
 
 export default checkout;

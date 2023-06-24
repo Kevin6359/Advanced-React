@@ -6,6 +6,9 @@ import {useState} from 'react';
 import SickButton from './styles/SickButton';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/client';
+import {useRouter} from 'next/dist/client/router';
+import {useCart} from '../lib/cartState';
+import {CURRENT_USER_QUERY} from './User';
 
 const CheckoutFormStyles = styled.form`
   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
@@ -39,8 +42,15 @@ function CheckoutForm() {
     const stripe = useStripe();
     const elements = useElements();
     const [checkout, {error: graphQLError}] = useMutation(
-        CREATE_ORDER_MUTATION
+        CREATE_ORDER_MUTATION,
+        {
+            refetchQueries: [
+                {query: CURRENT_USER_QUERY}
+            ]
+        }
     );
+    const router = useRouter();
+    const {closeCart} = useCart();
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -68,6 +78,13 @@ function CheckoutForm() {
 
         console.log('finished with the order');
         console.log(order);
+
+        router.push({
+            pathname: '/order',
+            query: order.data.checkout.id
+        });
+
+        closeCart();
 
         setLoading(false);
         nProgress.done();
