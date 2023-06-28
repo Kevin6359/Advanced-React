@@ -9,13 +9,13 @@ const fakeItem = () => ({
   id: 'abc123',
   price: 5000,
   user: null,
-  photo: {
+  photo: [{
     id: 'abc123',
     altText: 'dogs are best',
     image: {
       publicUrlTransformed: 'dog.jpg',
     },
-  },
+  }],
   name: 'dogs are best',
   description: 'dogs',
 });

@@ -16,7 +16,7 @@ export default function AddToCart({ id }) {
     variables: { id },
     refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
-  const { openCart } = useCart();
+  const { openCart } = useCart() || (() => {});
   const openAndAdd = function () {
     addToCart();
     openCart();
