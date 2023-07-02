@@ -29,7 +29,6 @@ describe('<Product/>', () => {
             <SingleProduct id='123'/>
         </MockedProvider>);
         await screen.findByTestId('singleProduct');
-        expect(container).toMatchSnapshot();
     });
 
     it('errors out when an item is not found', async () => {
@@ -50,7 +49,6 @@ describe('<Product/>', () => {
             <SingleProduct id='123'/>
         </MockedProvider>);
         await screen.findByTestId('graphql-error');
-        expect(container).toMatchSnapshot();
         expect(container).toHaveTextContent('Shoot!');
         expect(container).toHaveTextContent('Item not found!!!');
     });

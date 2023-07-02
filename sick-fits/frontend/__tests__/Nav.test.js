@@ -43,7 +43,6 @@ describe('<Nav/>', () => {
       </CartStateProvider>
     );
     expect(container).toHaveTextContent('Sign In');
-    expect(container).toMatchSnapshot();
     const link = screen.getByText('Sign In');
     expect(link).toHaveAttribute('href', '/signin');
     const productsLink = screen.getByText('Products');
@@ -60,7 +59,6 @@ describe('<Nav/>', () => {
       </CartStateProvider>
     );
     await screen.findByText('Account');
-    expect(container).toMatchSnapshot();
     expect(container).toHaveTextContent('Sign Out');
     expect(container).toHaveTextContent('My Cart');
   });

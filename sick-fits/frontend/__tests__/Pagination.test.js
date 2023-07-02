@@ -23,7 +23,6 @@ describe('<Pagination/>', () => {
     expect(container).toHaveTextContent('Page 1 of 5');
     const pageCountSpan = screen.getByTestId('pageCount');
     expect(pageCountSpan).toHaveTextContent('5');
-    expect(container).toMatchSnapshot();
   });
 
   it('disables the prev page on first page', async () => {

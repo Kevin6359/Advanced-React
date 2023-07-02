@@ -5,7 +5,7 @@ import DisplayError from './ErrorMessage';
 import Form from './styles/Form';
 import { CURRENT_USER_QUERY } from './User';
 
-const SIGN_UP_MUTATION = gql`
+export const SIGN_UP_MUTATION = gql`
   mutation SIGN_UP_MUTATION(
     $email: String!
     $name: String!
@@ -76,8 +76,8 @@ export default function SignUp() {
             onChange={handleChange}
           />
         </label>
-        <button type="submit">Sign Up</button>
+        <button type="submit">Sign Up!</button>
       </fieldset>
     </Form>
   );
-}
+};

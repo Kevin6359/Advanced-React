@@ -4,7 +4,7 @@ import useForm from '../lib/useForm';
 import DisplayError from './ErrorMessage';
 import Form from './styles/Form';
 
-const REQUEST_RESET_MUTATION = gql`
+export const REQUEST_RESET_MUTATION = gql`
   mutation REQUEST_RESET_MUTATION($email: String!) {
     sendUserPasswordResetLink(email: $email) {
       code
@@ -49,7 +49,7 @@ export default function RequestReset() {
             onChange={handleChange}
           />
         </label>
-        <button type="submit">Password Reset</button>
+        <button type="submit">Request Reset</button>
       </fieldset>
     </Form>
   );
